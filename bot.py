@@ -49,7 +49,7 @@ async def on_message(message):
             await execute_command_with_status_message(status_message, up_command, start_time)
 
             elapsed_time = time.time() - start_time
-            await status_message.edit(content=f'✅ UPDATE SUCCESSFUL ✅\nTotal time: {elapsed_time:.2f} seconds.')
+            await status_message.edit(content=f'✅ UPDATE SUCCESSFUL ✅')
 
         except subprocess.CalledProcessError as e:
             await status_message.edit(content=f'❌ UPDATE FAILED ❌\nError during the update.:\n```\n{e.output.decode()}\n```')
