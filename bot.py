@@ -1,15 +1,10 @@
 import discord
-import os
 import subprocess
 import time
 import asyncio
 
-##############################################################################################################################
-
 TOKEN = 'your-discord-bot-token'
-USER_ID = 'your-discord-user-id'
-
-##############################################################################################################################
+USER_ID = 'your-discord-client-id'
 
 intents = discord.Intents.default()
 intents.typing = False
@@ -28,59 +23,42 @@ async def on_message(message):
 
     if message.content == 'update' and str(message.author.id) == USER_ID:
         status_message = await message.channel.send('Update in progress...')
+        start_time = time.time()
+        commands = [
+            'docker-compose stop',
+            'git pull',
+            'docker-compose build',
+            'docker-compose up -d'
+        ]
+        await execute_commands_with_status_messages(status_message, commands)
+        elapsed_time = time.time() - start_time
+        await status_message.edit(content=f'Update completed in {elapsed_time:.2f} seconds.')
 
-        try:
-            start_time = time.time()
+    if message.content == 'start' and str(message.author.id) == USER_ID:
+        status_message = await message.channel.send('Starting docker...')
+        command = 'docker-compose up -d'
+        await execute_command_with_status_message(status_message, command)
 
-            # Execute command "docker-compose stop"
-            stop_command = 'docker-compose stop'
-            await execute_command_with_status_message(status_message, stop_command, start_time)
-
-            # Execute command "git pull"
-            pull_command = 'git pull'
-            await execute_command_with_status_message(status_message, pull_command, start_time)
-
-            # Execute command "docker-compose build"
-            build_command = 'docker-compose build'
-            await execute_command_with_status_message(status_message, build_command, start_time)
-
-            # Execute command "docker-compose up -d"
-            up_command = 'docker-compose up -d'
-            await execute_command_with_status_message(status_message, up_command, start_time)
-
-            elapsed_time = time.time() - start_time
-            await status_message.edit(content=f'✅ UPDATE SUCCESSFUL ✅')
-
-        except subprocess.CalledProcessError as e:
-            await status_message.edit(content=f'❌ UPDATE FAILED ❌\nError during the update.:\n```\n{e.output.decode()}\n```')
-
-async def execute_command_with_status_message(message, command, start_time):
-    log_message = ''
+async def execute_command_with_status_message(message, command):
+    start_time = time.time()
+    status = await message.channel.send(f'Command "{command}"')
+    process = await asyncio.create_subprocess_shell(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = await process.communicate()
     elapsed_time = time.time() - start_time
 
-    status = await message.channel.send(f'Command "{command}" ({elapsed_time:.2f}s)')
-    process = await asyncio.create_subprocess_shell(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output = stdout.decode() if stdout else stderr.decode()
+    log_message = output[-500:]  # Last 500 characters of the log
 
-    while True:
-        elapsed_time = time.time() - start_time
-        await status.edit(content=f'Command "{command}" ({elapsed_time:.2f}s)')
-
-        try:
-            stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=1)
-        except asyncio.TimeoutError:
-            continue
-
-        output = stdout.decode() if stdout else stderr.decode()
-        log_message += output[-500:]  # Last 500 character of the log
-
-        if process.returncode == 0:
-            await status.edit(content=f'Command "{command}" executed in {elapsed_time:.2f} seconds:')
-            break
-        else:
-            await status.edit(content=f'Error while executing the command "{command}":')
-            break
+    if process.returncode == 0:
+        await status.edit(content=f'Command "{command}" executed in {elapsed_time:.2f} seconds:')
+    else:
+        await status.edit(content=f'Error while executing the command "{command}":')
 
     if log_message:
         await message.channel.send(f'```\n{log_message}\n```')
+
+async def execute_commands_with_status_messages(status_message, commands):
+    for command in commands:
+        await execute_command_with_status_message(status_message, command)
 
 client.run(TOKEN)
