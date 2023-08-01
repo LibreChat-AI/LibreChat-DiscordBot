@@ -1,4 +1,4 @@
 TOKEN = ''
 USER_ID = ''
-WORKING_DIR = "." 
+WORKING_DIR = "."
 # ^ The default value is the current directory, set with "."
