@@ -1,0 +1,3 @@
+discord_py_interactions==5.9.2
+discord_py_slash_command==4.2.1
+interactions.py==5.8.0
