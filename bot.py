@@ -23,7 +23,7 @@ client = Client(intents=interactions.Intents.ALL, token=TOKEN, sync_interactions
 async def on_startup():
     print(f'{client.user} connected to discord')
     print('----------------------------------------------------------------------------------------------------------------')
-    print(f'Bot invite link: https://discord.com/api/oauth2/authorize?client_id={bot_config.CLIENT_ID}&permissions=8&scope=bot')
+    print(f'Bot invite link: https://discord.com/api/oauth2/authorize?client_id={bot_config.CLIENT_ID}&permissions=551903348736&scope=bot')
     print('----------------------------------------------------------------------------------------------------------------')
 
 
