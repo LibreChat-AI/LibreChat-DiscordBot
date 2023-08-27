@@ -47,13 +47,18 @@ The LibreChat-DiscordBot is a versatile and user-friendly Discord bot designed t
    - **Stop**: Stop the local LibreChat server.
    - **Update**: Update the local LibreChat server.
 
+---
+
+>⚠️ Warning: When using this bot, exercise caution with command permissions. It is strongly recommended to limit bot command permissions to yourself or trusted individuals. We advise using the bot on a private discord server to minimize risks. This precaution is crucial as certain commands allow manipulating the .env file, and have the potential to expose sensitive API keys.
+---
+
 ## [Installation](https://github.com/Berry-13/LibreChat-DiscordBot/wiki)
 ☝️ **Please visit the [Wiki](https://github.com/Berry-13/LibreChat-DiscordBot/wiki) for detailled instruction on how to install and use the bot!**
 
 ---
 
 ### TL;DR
-- Clone or download the repo
+- Clone or download the repo __on a computer where LibreChat is installed__
 - Install the requirements with: `pip install -r requirements.txt`
 - Rename `bot_config.py.example` to `bot_config.py`
 - Go to the [Discord Developer Portal](https://discord.com/developers/applications) and create an application
