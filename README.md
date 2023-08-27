@@ -1,4 +1,11 @@
-# LibreChat-DiscordBot
+<p align="center">
+  <a href="https://docs.librechat.ai">
+    <img src="https://github.com/Berry-13/LibreChat-DiscordBot/assets/81851188/90a711aa-9a0f-4d3b-8ff9-7ac2cfe2606b" height="256">
+  </a>
+    <h1 align="center">LibreChat-DiscordBot</h1>
+</p>
+
+
 The LibreChat-DiscordBot is a versatile and user-friendly Discord bot designed to streamline interactions with your LibreChat server. With this bot, you can effortlessly manage the LibreChat server directly from your Discord server, eliminating the need for direct server access. It offers an array of functionalities to enhance your LibreChat experience.
 
 **Bot Capabilities:**
