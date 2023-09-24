@@ -13,9 +13,9 @@ TOKEN = bot_config.TOKEN
 
 logging.basicConfig()
 cls_log = logging.getLogger('MyLogger')
-cls_log.setLevel(logging.DEBUG)
+cls_log.setLevel(logging.INFO)
 
-client = Client(intents=interactions.Intents.ALL, token=TOKEN, sync_interactions=True, asyncio_debug=True, logger=cls_log, send_command_tracebacks=False)
+client = Client(intents=interactions.Intents.ALL, token=TOKEN, sync_interactions=True, asyncio_debug=False, logger=cls_log, send_command_tracebacks=False)
 
 
 # 👂
