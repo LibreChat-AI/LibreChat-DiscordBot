@@ -54,6 +54,13 @@ The LibreChat-DiscordBot is a versatile and user-friendly Discord bot designed t
    - **Stop**: Stop the local LibreChat server.
    - **Update**: Update the local LibreChat server.
 
+- /**balance**
+
+  💸 Set credit balance for a user
+  - user email is required
+  - Set the following .env variable to enable this CHECK_BALANCE=true
+  - 1000 credits = $0.001
+
 ---
 
 >⚠️ Warning: When using this bot, exercise caution with command permissions. It is strongly recommended to limit bot command permissions to yourself or trusted individuals. We advise using the bot on a private discord server to minimize risks. This precaution is crucial as certain commands allow manipulating the .env file, and have the potential to expose sensitive API keys.
