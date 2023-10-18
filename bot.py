@@ -8,7 +8,6 @@ import asyncio
 import subprocess
 import requests
 
-
 TOKEN = bot_config.TOKEN
 
 logging.basicConfig()
@@ -92,6 +91,14 @@ async def help_command(ctx: SlashContext):
         "- **Update**: Update LibreChat (this may take several minutes)."
         )
     embed.add_field(
+        name="/balance", 
+        value=
+        "💸 Set credit balance for a user \n"
+        "- user email is required \n"
+        "- Set the following .env variable to enable this `CHECK_BALANCE=true` \n"
+        "- 1000 credits = $0.001"
+        )
+    embed.add_field(
         name="---",
         value=" \n"
     )
@@ -135,7 +142,7 @@ async def librechat(ctx: SlashContext):
 
 # 📂 LIBRECHAT DIR
 @slash_command(name="path", description="📂 Configure the LibreChat path")
-async def my_command_function(ctx: SlashContext):
+async def set_path(ctx: SlashContext):
     import bot_config
     current_path = bot_config.LIBRECHAT_PATH
 
@@ -182,6 +189,38 @@ async def handle_path_response(ctx: SlashContext, path, current_path):
         await ctx.send(f"Oops, something went wrong. 😢 \nThe error message is: {e}", ephemeral=True)
         return current_path
 
+
+# 💸 ADD BALANCE
+@slash_command(name="balance", description="💸 Add credit to user’s balance")
+
+async def balance_modal(ctx: SlashContext):
+    balance = Modal(
+        ShortText(
+            label="📧 User's email",
+            custom_id="email",
+            required=True,
+            min_length=6,
+            max_length=64,
+            placeholder="example@example.com",
+        ),
+        ShortText(
+            label="💰 Credit quantity - 1000 credits = $0.001",
+            custom_id="credits",
+            required=True,
+            min_length=4,
+            max_length=12,
+            placeholder="Enter a number between 1000 and 999999999999",
+        ),
+        title="💸 Set Balance",
+        custom_id="balance",
+    )
+    await ctx.send_modal(modal=balance)
+
+@modal_callback("balance")
+async def on_modal_answer(ctx: ModalContext, email: str, credits: str):
+    command = f"npm run add-balance {email} {credits}"
+    await ctx.send(f"{command}", ephemeral=True)
+    await run_shell_command(ctx, command)
 
 # ⚙️ DOTENV FILE COMMANDS
 uploaded_files = {}
@@ -597,7 +636,11 @@ async def run_shell_command(ctx: interactions.SlashContext, command):
         initial_content = f'⚠️ Error while executing the command "{command}": \n\n{error_message}'
 
     if log_message:
-        await ctx.edit(content=f'"{initial_content}"\n```\n{log_message}\n```')
+        message = f'"{initial_content}"\n```\n{log_message}\n```'
+    else:
+        message = initial_content
+
+    await ctx.send(message, ephemeral=True)
 
 
 # 🖨️ LOCAL SHELL COMMAND (FOR "npm run start" STREAMED OUTPUT)
@@ -644,10 +687,10 @@ async def run_local_shell_command(ctx: interactions.SlashContext, command):
             await ctx.edit(content=fail)  # Display failure output
 
     except asyncio.CancelledError:
-        await ctx.send(content=f'Command "{command}" cancelled.')
+        await ctx.send(content=f'Command "{command}" cancelled.', ephemeral=True)
 
     except Exception as e:
-        await ctx.send(content=f'Error occurred while executing the command `{command}`: {e}')
+        await ctx.send(content=f'Error occurred while executing the command `{command}`: {e}', ephemeral=True)
 
 
 client.start()
