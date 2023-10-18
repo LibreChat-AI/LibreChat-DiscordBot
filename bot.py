@@ -93,7 +93,7 @@ async def help_command(ctx: SlashContext):
     embed.add_field(
         name="/balance", 
         value=
-        "💵 Set credit balance for a user \n"
+        "💸 Set credit balance for a user \n"
         "- user email is required \n"
         "- Set the following .env variable to enable this `CHECK_BALANCE=true` \n"
         "- 1000 credits = $0.001"
@@ -190,13 +190,13 @@ async def handle_path_response(ctx: SlashContext, path, current_path):
         return current_path
 
 
-# 💵 ADD BALANCE
-@slash_command(name="balance", description="💵 Add balance for a user")
+# 💸 ADD BALANCE
+@slash_command(name="balance", description="💸 Add credit to user’s balance")
 
 async def balance_modal(ctx: SlashContext):
     balance = Modal(
         ShortText(
-            label="📧 Enter the user's email",
+            label="📧 User's email",
             custom_id="email",
             required=True,
             min_length=6,
@@ -204,14 +204,14 @@ async def balance_modal(ctx: SlashContext):
             placeholder="example@example.com",
         ),
         ShortText(
-            label="🪙 Enter the credits quantity",
+            label="💰 Credit quantity - 1000 credits = $0.001",
             custom_id="credits",
             required=True,
             min_length=4,
             max_length=12,
-            placeholder="1000 credits = $0.001 - Enter a number between 1000 and 999999999999",
+            placeholder="Enter a number between 1000 and 999999999999",
         ),
-        title="💵 Set Balance",
+        title="💸 Set Balance",
         custom_id="balance",
     )
     await ctx.send_modal(modal=balance)
