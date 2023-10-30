@@ -37,20 +37,20 @@ async def ping(ctx: SlashContext):
 @slash_command(name="help", description="Show a list of available commands")
 async def help_command(ctx: SlashContext):
     embed = interactions.Embed(title="LibreChat Updater", description="Here is a list of available commands:", color=0x8000ff, url="https://github.com/Berry-13/LibreChat-DiscordBot")
-    
+
     # Add fields for each command
     embed.add_field(
-        name="/ping", 
+        name="/ping",
         value="📞 Ping the bot \n"
         "- ping the bot, returns the latency in milliseconds"
         )
     embed.add_field(
-        name="/librechat", 
+        name="/librechat",
         value="🌐 Explore LibreChat URLs \n"
         "- Quick access to LibreChat **GitHub**, **Documentation**, **Discord** and **YouTube**"
         )
     embed.add_field(
-        name="/path", 
+        name="/path",
         value="📂 Configure the LibreChat path \n"
         "- Set the path of the LibreChat folder. \n"
         "- Use either the absolute path format \n"
@@ -59,7 +59,7 @@ async def help_command(ctx: SlashContext):
         "Example: `../LibreChat`"
         )
     embed.add_field(
-        name="/env", 
+        name="/env",
         value="⚙️ Manage the .env file \n"
         "- **Download**: Download a copy of the .env file from the LibreChat folder. \n"
         "- **Upload**: Upload a new `.env` file to replace the current one (You must include the `.env` file when calling **/env**) This command will also backup your current `.env` file before replacing it with the uploaded file \n"
@@ -67,7 +67,7 @@ async def help_command(ctx: SlashContext):
         "- **Example**: Download the `.env.example` from the LibreChat folder"
         )
     embed.add_field(
-        name="/docker", 
+        name="/docker",
         value="🐳 Regular Docker commands \n"
         "- **Start**: Start the docker container \n"
         "- **Stop**: Stop the docker container \n"
@@ -75,7 +75,7 @@ async def help_command(ctx: SlashContext):
         "- **Status**: Display the status of all Docker containers."
         )
     embed.add_field(
-        name="/docker-single", 
+        name="/docker-single",
         value="🐳 Docker commands for `single-compose.yml` \n"
         "- **Start**: Start the docker container \n"
         "- **Stop**: Stop the docker container \n"
@@ -83,7 +83,7 @@ async def help_command(ctx: SlashContext):
         "- **Status**: Display the status of all Docker containers."
         )
     embed.add_field(
-        name="/local", 
+        name="/local",
         value=
         "💻 Commands for local LibreChat install \n"
         "- **Start**: start LibreChat \n"
@@ -91,7 +91,7 @@ async def help_command(ctx: SlashContext):
         "- **Update**: Update LibreChat (this may take several minutes)."
         )
     embed.add_field(
-        name="/balance", 
+        name="/balance",
         value=
         "💸 Set credit balance for a user \n"
         "- user email is required \n"
@@ -99,7 +99,7 @@ async def help_command(ctx: SlashContext):
         "- 1000 credits = $0.001"
         )
     embed.add_field(
-        name="/ban", 
+        name="/ban",
         value=
         "🔨 Ban User \n"
         "- user email is required"
@@ -161,7 +161,7 @@ async def set_path(ctx: SlashContext):
 async def send_path_modal(ctx: SlashContext, current_path):
     path = Modal(
         ShortText(
-            label=f"📂 Enter the LibreChat folder path",
+            label="📂 Enter the LibreChat folder path",
             custom_id="new_path",
             value=f"{current_path}",
         ),
@@ -174,7 +174,7 @@ async def handle_path_response(ctx: SlashContext, path, current_path):
     old_path = current_path
     modal_ctx = await ctx.bot.wait_for_modal(path)  # Pass the custom_id as the path parameter
     new_path = modal_ctx.responses["new_path"]
-    
+
     try: # try to open and write to the file
         with open("bot_config.py", "r") as file: # open the file in read mode
             lines = file.readlines() # store the lines in a variable
@@ -188,7 +188,7 @@ async def handle_path_response(ctx: SlashContext, path, current_path):
             file.writelines(lines) # write the modified lines to the file
 
         await modal_ctx.send(f"Path updated successfully! ✅ \n\n📂 Path changed from **{old_path}** to **{new_path}**", ephemeral=True)
-        
+
         return new_path
 
     except Exception as e: # catch any errors or exceptions
@@ -227,7 +227,7 @@ async def on_modal_answer(ctx: ModalContext, email: str, credits: str):
     await ctx.send(f"{command}", ephemeral=True)
     await run_shell_command(ctx, command)
 
-# 💸 ADD BALANCE
+# 🔨 BAN USER
 @slash_command(name="ban", description="🔨 Ban User")
 async def balance_modal(ctx: SlashContext):
     balance = Modal(
