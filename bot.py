@@ -99,6 +99,12 @@ async def help_command(ctx: SlashContext):
         "- 1000 credits = $0.001"
         )
     embed.add_field(
+        name="/ban", 
+        value=
+        "🔨 Ban User \n"
+        "- user email is required"
+        )
+    embed.add_field(
         name="---",
         value=" \n"
     )
@@ -192,7 +198,6 @@ async def handle_path_response(ctx: SlashContext, path, current_path):
 
 # 💸 ADD BALANCE
 @slash_command(name="balance", description="💸 Add credit to user’s balance")
-
 async def balance_modal(ctx: SlashContext):
     balance = Modal(
         ShortText(
@@ -219,6 +224,29 @@ async def balance_modal(ctx: SlashContext):
 @modal_callback("balance")
 async def on_modal_answer(ctx: ModalContext, email: str, credits: str):
     command = f"npm run add-balance {email} {credits}"
+    await ctx.send(f"{command}", ephemeral=True)
+    await run_shell_command(ctx, command)
+
+# 💸 ADD BALANCE
+@slash_command(name="ban", description="🔨 Ban User")
+async def balance_modal(ctx: SlashContext):
+    balance = Modal(
+        ShortText(
+            label="📧 User's email",
+            custom_id="email",
+            required=True,
+            min_length=6,
+            max_length=64,
+            placeholder="example@example.com",
+        ),
+        title="🔨 Ban User",
+        custom_id="ban",
+    )
+    await ctx.send_modal(modal=balance)
+
+@modal_callback("ban")
+async def on_modal_answer(ctx: ModalContext, email: str):
+    command = f"npm run ban-user {email}"
     await ctx.send(f"{command}", ephemeral=True)
     await run_shell_command(ctx, command)
 
