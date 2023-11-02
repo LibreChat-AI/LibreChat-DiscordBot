@@ -92,6 +92,12 @@ class Help(Extension):
             "- 1000 credits = $0.001"
             )
         embed.add_field(
+            name="/ban",
+            value=
+            "🔨 Ban a user\n"
+            "- user email is required\n"
+            )
+        embed.add_field(
             name="---",
             value="\n"
         )
