@@ -13,25 +13,24 @@ import subprocess
 import importlib
 import requests
 from interactions import (
-    Client,
-    listen,
-    slash_command,
-    SlashContext,
     ActionRow,
+    Attachment,
     Button,
     ButtonStyle,
+    Client,
     ComponentContext,
-    component_callback,
-    Intents,
     Embed,
+    File,
+    Intents,
     Modal,
-    ShortText,
     ModalContext,
-    modal_callback,
-    slash_option,
     OptionType,
-    Attachment,
-    File
+    ShortText,
+    SlashContext,
+    component_callback,
+    listen,
+    modal_callback,
+    slash_command
 )
 import bot_config
 
