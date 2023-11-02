@@ -12,7 +12,7 @@ import asyncio
 import subprocess
 import importlib
 import requests
-from interactions import (
+from interactions import(
     ActionRow,
     Attachment,
     Button,
@@ -30,7 +30,8 @@ from interactions import (
     component_callback,
     listen,
     modal_callback,
-    slash_command
+    slash_command,
+    slash_option
 )
 import bot_config
 
@@ -73,7 +74,6 @@ async def help_command(ctx: SlashContext):
         color=0x8000ff,
         url="https://github.com/Berry-13/LibreChat-DiscordBot"
         )
-
     # Add fields for each command
     embed.add_field(
         name="/ping",
@@ -243,7 +243,6 @@ async def handle_path_response(ctx: SlashContext, path, current_path):
         name="balance",
         description="💸 Add credit to user’s balance"
         )
-
 async def balance_modal(ctx: SlashContext):
     balance = Modal(
         ShortText(
@@ -280,6 +279,7 @@ uploaded_files = {}
     name='env',
     description='⚙️ Commands to download/upload/restore the .env file'
     )
+
 @slash_option(
     name='file',
     description='📄 .env file',
