@@ -1,12 +1,40 @@
-import interactions #Interactions.py 5.9.2
-from interactions import *
-import bot_config
-import logging
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+# pylint: disable=line-too-long
+# pylint: disable=anomalous-backslash-in-string
+# pylint: disable=broad-exception-caught
+
 import os
+import logging
 import time
 import asyncio
 import subprocess
+import importlib
 import requests
+from interactions import (
+    Client,
+    listen,
+    slash_command,
+    SlashContext,
+    ActionRow,
+    Button,
+    ButtonStyle,
+    ComponentContext,
+    component_callback,
+    Intents,
+    Embed,
+    Modal,
+    ShortText,
+    ModalContext,
+    modal_callback,
+    slash_option,
+    OptionType,
+    Attachment,
+    File
+)
+import bot_config
+
 
 TOKEN = bot_config.TOKEN
 
@@ -14,8 +42,14 @@ logging.basicConfig()
 cls_log = logging.getLogger('MyLogger')
 cls_log.setLevel(logging.INFO)
 
-client = Client(intents=interactions.Intents.ALL, token=TOKEN, sync_interactions=True, asyncio_debug=False, logger=cls_log, send_command_tracebacks=False)
-
+client = Client(
+    intents=Intents.ALL,
+    token=TOKEN,
+    sync_interactions=True,
+    asyncio_debug=False,
+    logger=cls_log,
+    send_command_tracebacks=False
+)
 
 # 👂
 @listen()
@@ -36,71 +70,82 @@ async def ping(ctx: SlashContext):
 # 📄 HELP
 @slash_command(name="help", description="Show a list of available commands")
 async def help_command(ctx: SlashContext):
-    embed = interactions.Embed(title="LibreChat Updater", description="Here is a list of available commands:", color=0x8000ff, url="https://github.com/Berry-13/LibreChat-DiscordBot")
-    
+    embed = Embed(
+        title="LibreChat Updater",
+        description="Here is a list of available commands:",
+        color=0x8000ff,
+        url="https://github.com/Berry-13/LibreChat-DiscordBot"
+        )
+
     # Add fields for each command
     embed.add_field(
-        name="/ping", 
-        value="📞 Ping the bot \n"
+        name="/ping",
+        value=
+        "📞 Ping the bot \n"
         "- ping the bot, returns the latency in milliseconds"
         )
     embed.add_field(
-        name="/librechat", 
-        value="🌐 Explore LibreChat URLs \n"
+        name="/librechat",
+        value=
+        "🌐 Explore LibreChat URLs \n"
         "- Quick access to LibreChat **GitHub**, **Documentation**, **Discord** and **YouTube**"
         )
     embed.add_field(
-        name="/path", 
-        value="📂 Configure the LibreChat path \n"
-        "- Set the path of the LibreChat folder. \n"
-        "- Use either the absolute path format \n"
-        "Example: `C:\LibreChat` \n"
+        name="/path",
+        value=
+        "📂 Configure the LibreChat path\n"
+        "- Set the path of the LibreChat folder.\n"
+        "- Use either the absolute path format\n"
+        "Example: `C:\LibreChat`\n"
         "- or the relative path format (relative to the bot folder).\n"
         "Example: `../LibreChat`"
         )
     embed.add_field(
-        name="/env", 
-        value="⚙️ Manage the .env file \n"
-        "- **Download**: Download a copy of the .env file from the LibreChat folder. \n"
+        name="/env",
+        value=
+        "⚙️ Manage the .env file\n"
+        "- **Download**: Download a copy of the .env file from the LibreChat folder.\n"
         "- **Upload**: Upload a new `.env` file to replace the current one (You must include the `.env` file when calling **/env**) This command will also backup your current `.env` file before replacing it with the uploaded file \n"
         "- **Restore**: Restore the `.env` file backup and __**delete**__ the current .env file \n"
         "- **Example**: Download the `.env.example` from the LibreChat folder"
         )
     embed.add_field(
-        name="/docker", 
-        value="🐳 Regular Docker commands \n"
-        "- **Start**: Start the docker container \n"
-        "- **Stop**: Stop the docker container \n"
-        "- **Update**: Update LibreChat (this may take several minutes). \n"
-        "- **Status**: Display the status of all Docker containers."
-        )
-    embed.add_field(
-        name="/docker-single", 
-        value="🐳 Docker commands for `single-compose.yml` \n"
-        "- **Start**: Start the docker container \n"
-        "- **Stop**: Stop the docker container \n"
-        "- **Update**: Update LibreChat (this may take several minutes). \n"
-        "- **Status**: Display the status of all Docker containers."
-        )
-    embed.add_field(
-        name="/local", 
+        name="/docker",
         value=
-        "💻 Commands for local LibreChat install \n"
-        "- **Start**: start LibreChat \n"
-        "- **Stop**: Stop LibreChat \n"
+        "🐳 Regular Docker commands\n"
+        "- **Start**: Start the docker container\n"
+        "- **Stop**: Stop the docker container\n"
+        "- **Update**: Update LibreChat (this may take several minutes).\n"
+        "- **Status**: Display the status of all Docker containers."
+        )
+    embed.add_field(
+        name="/docker-single",
+        value=
+        "🐳 Docker commands for `single-compose.yml`\n"
+        "- **Start**: Start the docker container\n"
+        "- **Stop**: Stop the docker container\n"
+        "- **Update**: Update LibreChat (this may take several minutes).\n"
+        "- **Status**: Display the status of all Docker containers."
+        )
+    embed.add_field(
+        name="/local",
+        value=
+        "💻 Commands for local LibreChat install\n"
+        "- **Start**: start LibreChat\n"
+        "- **Stop**: Stop LibreChat\n"
         "- **Update**: Update LibreChat (this may take several minutes)."
         )
     embed.add_field(
-        name="/balance", 
+        name="/balance",
         value=
-        "💸 Set credit balance for a user \n"
-        "- user email is required \n"
-        "- Set the following .env variable to enable this `CHECK_BALANCE=true` \n"
+        "💸 Set credit balance for a user\n"
+        "- user email is required\n"
+        "- Set the following .env variable to enable this `CHECK_BALANCE=true`\n"
         "- 1000 credits = $0.001"
         )
     embed.add_field(
         name="---",
-        value=" \n"
+        value="\n"
     )
     embed.add_field(
         name="Visit our GitHub page for the latest updates, additional information or to report any problems",
@@ -110,10 +155,13 @@ async def help_command(ctx: SlashContext):
     await ctx.send(embed=embed, ephemeral=True)
 
 
-# 🌐 LIBRECHAT HYPERLINKS 
-@slash_command(name='librechat', description='🌐 LibreChat URLs')
+# 🌐 LIBRECHAT HYPERLINKS
+@slash_command(
+        name='librechat',
+        description='🌐 LibreChat URLs'
+        )
 async def librechat(ctx: SlashContext):
-    librechat = [
+    librechat_btns = [
         ActionRow(
             Button(
                 style=ButtonStyle.URL,
@@ -137,13 +185,16 @@ async def librechat(ctx: SlashContext):
             )
         )
     ]
-    await ctx.send("Useful LibreChat links:", components=librechat)
+    await ctx.send("Useful LibreChat links:", components=librechat_btns)
 
 
 # 📂 LIBRECHAT DIR
-@slash_command(name="path", description="📂 Configure the LibreChat path")
+@slash_command(
+        name="path",
+        description="📂 Configure the LibreChat path"
+        )
 async def set_path(ctx: SlashContext):
-    import bot_config
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
 
     path = await send_path_modal(ctx, current_path)
@@ -155,7 +206,7 @@ async def set_path(ctx: SlashContext):
 async def send_path_modal(ctx: SlashContext, current_path):
     path = Modal(
         ShortText(
-            label=f"📂 Enter the LibreChat folder path",
+            label="📂 Enter the LibreChat folder path",
             custom_id="new_path",
             value=f"{current_path}",
         ),
@@ -168,21 +219,21 @@ async def handle_path_response(ctx: SlashContext, path, current_path):
     old_path = current_path
     modal_ctx = await ctx.bot.wait_for_modal(path)  # Pass the custom_id as the path parameter
     new_path = modal_ctx.responses["new_path"]
-    
+
     try: # try to open and write to the file
-        with open("bot_config.py", "r") as file: # open the file in read mode
+        with open("bot_config.py", "r", encoding="utf-8") as file: # open the file in read mode
             lines = file.readlines() # store the lines in a variable
 
-        for i in range(len(lines)):
-            if lines[i].startswith("LIBRECHAT_PATH"):
+        for i, line in enumerate(lines):
+            if line.startswith("LIBRECHAT_PATH"):
                 lines[i] = f'LIBRECHAT_PATH = "{new_path}"\n'
                 break
 
-        with open("bot_config.py", "w") as file: # open the file again in write mode
+        with open("bot_config.py", "w", encoding="utf-8") as file: # open the file again in write mode
             file.writelines(lines) # write the modified lines to the file
 
         await modal_ctx.send(f"Path updated successfully! ✅ \n\n📂 Path changed from **{old_path}** to **{new_path}**", ephemeral=True)
-        
+
         return new_path
 
     except Exception as e: # catch any errors or exceptions
@@ -191,7 +242,10 @@ async def handle_path_response(ctx: SlashContext, path, current_path):
 
 
 # 💸 ADD BALANCE
-@slash_command(name="balance", description="💸 Add credit to user’s balance")
+@slash_command(
+        name="balance",
+        description="💸 Add credit to user’s balance"
+        )
 
 async def balance_modal(ctx: SlashContext):
     balance = Modal(
@@ -217,20 +271,27 @@ async def balance_modal(ctx: SlashContext):
     await ctx.send_modal(modal=balance)
 
 @modal_callback("balance")
-async def on_modal_answer(ctx: ModalContext, email: str, credits: str):
-    command = f"npm run add-balance {email} {credits}"
+async def on_modal_answer(ctx: ModalContext, email: str, credit_amount: str):
+    command = f"npm run add-balance {email} {credit_amount}"
     await ctx.send(f"{command}", ephemeral=True)
     await run_shell_command(ctx, command)
 
 # ⚙️ DOTENV FILE COMMANDS
 uploaded_files = {}
 
-@slash_command(name='env', description='⚙️ Commands to download/upload/restore the .env file')
-@slash_option(name='file', description='📄 .env file', opt_type=OptionType.ATTACHMENT)
+@slash_command(
+    name='env',
+    description='⚙️ Commands to download/upload/restore the .env file'
+    )
+@slash_option(
+    name='file',
+    description='📄 .env file',
+    opt_type=OptionType.ATTACHMENT
+    )
 async def env(ctx: SlashContext, file: Attachment = None):
     uploaded_files[ctx.author.id] = file
 
-    env = [
+    env_btns = [
         ActionRow(
             Button(
                 style=ButtonStyle.GREEN,
@@ -254,30 +315,30 @@ async def env(ctx: SlashContext, file: Attachment = None):
             )
         )
     ]
-    await ctx.send("⚙️ .env Commands:", components=env, ephemeral=True)
+    await ctx.send("⚙️ .env Commands:", components=env_btns, ephemeral=True)
 
 # UPLOAD ⏫
 @component_callback("up")
 async def up_callback(ctx: ComponentContext):
-    import bot_config
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
-    
+
     file = uploaded_files.get(ctx.author.id)
     if file is None:
         await ctx.send("No file uploaded.👀 \n\nPlease upload an .env file with the **/env** command to use this feature")
         return
-    
+
     attachment = file
     file_name = attachment.filename
-    
+
     if not file_name.endswith("env"):
         await ctx.send("⛔Invalid file format.⛔ \n\nPlease upload an .env file.", ephemeral=True)
         return
-    
+
     file_path = os.path.join(current_path, ".env")
     existing_file_path = os.path.join(current_path, ".env.bak")
     temp_file_path = os.path.join(current_path, ".env.bak.temp")
-    
+
     if os.path.isfile(file_path):
         confirmation = [
             ActionRow(
@@ -298,44 +359,44 @@ async def up_callback(ctx: ComponentContext):
         try:
             if os.path.isfile(existing_file_path):
                 os.rename(existing_file_path, temp_file_path)
-    
+
             os.rename(file_path, existing_file_path)
             await ctx.send("💾 Existing .env file renamed to .env.bak.", ephemeral=True)
-    
-            response = requests.get(attachment.url)
+
+            response = requests.get(attachment.url, timeout=5)
             with open(file_path, "wb") as f:
                 f.write(response.content)
-    
+
             await ctx.send("Uploaded .env file to the LibreChat directory. 🎉 \n\nPlease restart or update LibreChat to apply the changes.", ephemeral=True)
-            
+
             if os.path.isfile(temp_file_path):
                 os.remove(temp_file_path)
-    
+
         except Exception as e:
             if os.path.isfile(temp_file_path):
                 if os.path.isfile(existing_file_path):
                     os.rename(temp_file_path, existing_file_path)
                 else:
                     os.rename(temp_file_path, file_path)
-    
+
             await ctx.send(f"😬 An error occurred while saving the file: {str(e)}", ephemeral=True)
 
 
 @component_callback("confirm_upload")
 async def confirm_upload_callback(ctx: ComponentContext):
-    import bot_config
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
-    
+
     file = uploaded_files.get(ctx.author.id)
     if file is None:
         await ctx.send("No file uploaded.👀 \n\nPlease upload an .env file with the **/env** command to use this feature")
         return
-    
+
     attachment = file
     file_path = os.path.join(current_path, ".env")
     existing_file_path = os.path.join(current_path, ".env.bak")
     temp_file_path = os.path.join(current_path, ".env.bak.temp")
-    
+
     try:
         if os.path.isfile(existing_file_path):
             os.rename(existing_file_path, temp_file_path)
@@ -343,7 +404,7 @@ async def confirm_upload_callback(ctx: ComponentContext):
         os.rename(file_path, existing_file_path)
         await ctx.send("💾 Existing .env file renamed to .env.bak.", ephemeral=True)
 
-        response = requests.get(attachment.url)
+        response=requests.get(attachment.url, timeout=5)
         with open(file_path, "wb") as f:
             f.write(response.content)
 
@@ -369,7 +430,7 @@ async def cancel_upload_callback(ctx: ComponentContext):
 # DOWNLOAD ⏬
 @component_callback("down")
 async def down_callback(ctx: ComponentContext):
-    import bot_config
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
 
     file_name = ".env"
@@ -380,13 +441,13 @@ async def down_callback(ctx: ComponentContext):
         return
 
     with open(file_path, "rb") as file:
-        await ctx.send(file=interactions.File(file, file_name), ephemeral=True)
+        await ctx.send(file=File(file, file_name), ephemeral=True)
 
 # DOWNLOAD .ENV.EXAMPLE 👀
 @component_callback("example")
 async def example_callback(ctx: ComponentContext):
     file_name = ".env.example"
-    import bot_config
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
     file_path = os.path.join(current_path, file_name)
 
@@ -395,16 +456,14 @@ async def example_callback(ctx: ComponentContext):
         return
 
     with open(file_path, "rb") as file:
-        await ctx.send(file=interactions.File(file, file_name), ephemeral=True)
+        await ctx.send(file=File(file, file_name), ephemeral=True)
 
 # RESTORE ⏪
-from interactions import ButtonStyle
-
 @component_callback("rest")
 async def rest_callback(ctx: ComponentContext):
-    import bot_config
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
-    
+
     env_file_path = os.path.join(current_path, ".env")
     env_bak_file_path = os.path.join(current_path, ".env.bak")
 
@@ -447,12 +506,12 @@ async def rest_callback(ctx: ComponentContext):
 
 @component_callback("confirm_rest")
 async def confirm_rest_callback(ctx: ComponentContext):
-    import bot_config
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
-    
+
     env_file_path = os.path.join(current_path, ".env")
     env_bak_file_path = os.path.join(current_path, ".env.bak")
-    
+
     if os.path.isfile(env_file_path):
         os.remove(env_file_path)
     os.rename(env_bak_file_path, env_file_path)
@@ -466,7 +525,7 @@ async def cancel_rest_callback(ctx: ComponentContext):
 # 🐳 DOCKER
 @slash_command(name='docker', description='🐳 Docker Commands')
 async def docker(ctx: SlashContext):
-    docker = [
+    docker_btns = [
         ActionRow(
             Button(
                 style=ButtonStyle.GREEN,
@@ -490,7 +549,7 @@ async def docker(ctx: SlashContext):
             )
         )
     ]
-    await ctx.send("🐳 Docker Commands:", components=docker, ephemeral=True)
+    await ctx.send("🐳 Docker Commands:", components=docker_btns, ephemeral=True)
 
 @component_callback("start")
 async def start_callback(ctx: ComponentContext):
@@ -518,9 +577,12 @@ async def status_callback(ctx: ComponentContext):
 
 
 # 🐳 SINGLE_COMPOSE DOCKER
-@slash_command(name='docker-single', description='🐳 Docker Commands for single-compose.yml')
+@slash_command(
+        name='docker-single',
+        description='🐳 Docker Commands for single-compose.yml'
+        )
 async def single(ctx: SlashContext):
-    single = [
+    single_btns = [
         ActionRow(
             Button(
                 style=ButtonStyle.GREEN,
@@ -544,7 +606,7 @@ async def single(ctx: SlashContext):
             )
         )
     ]
-    await ctx.send("🐳 Docker Commands:", components=single, ephemeral=True)
+    await ctx.send("🐳 Docker Commands:", components=single_btns, ephemeral=True)
 
 @component_callback("start-s")
 async def start_s_callback(ctx: ComponentContext):
@@ -566,9 +628,12 @@ async def update_s_callback(ctx: ComponentContext):
 
 
 # 💻 LOCAL
-@slash_command(name='local', description='💻 Commands for "local" LibreChat install')
+@slash_command(
+        name='local',
+        description='💻 Commands for "local" LibreChat install'
+        )
 async def local(ctx: SlashContext):
-    local = [
+    local_btns = [
         ActionRow(
             Button(
                 style=ButtonStyle.GREEN,
@@ -587,7 +652,7 @@ async def local(ctx: SlashContext):
             )
         )
     ]
-    await ctx.send("💻 Local Commands:", components=local, ephemeral=True)
+    await ctx.send("💻 Local Commands:", components=local_btns, ephemeral=True)
 
 @component_callback("start-l")
 async def start_l_callback(ctx: ComponentContext):
@@ -611,8 +676,8 @@ async def update_l_callback(ctx: ComponentContext):
 
 
 # 🖨️ SHELL COMMAND
-async def run_shell_command(ctx: interactions.SlashContext, command):
-    import bot_config
+async def run_shell_command(ctx: SlashContext, command):
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
     start_time = time.time()
 
@@ -644,14 +709,14 @@ async def run_shell_command(ctx: interactions.SlashContext, command):
 
 
 # 🖨️ LOCAL SHELL COMMAND (FOR "npm run start" STREAMED OUTPUT)
-async def run_local_shell_command(ctx: interactions.SlashContext, command):
-    import bot_config
+async def run_local_shell_command(ctx: SlashContext, command):
+    importlib.reload(bot_config)
     current_path = bot_config.LIBRECHAT_PATH
     start_time = time.time()
     try:
         process = await asyncio.create_subprocess_shell(
-            command, 
-            stdout=subprocess.PIPE, 
+            command,
+            stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             cwd=current_path
         )
