@@ -36,15 +36,13 @@ from interactions import (
 import bot_config
 
 
-TOKEN = bot_config.TOKEN
-
 logging.basicConfig()
 cls_log = logging.getLogger('MyLogger')
 cls_log.setLevel(logging.INFO)
 
 client = Client(
     intents=Intents.ALL,
-    token=TOKEN,
+    token=bot_config.TOKEN,
     sync_interactions=True,
     asyncio_debug=False,
     logger=cls_log,
