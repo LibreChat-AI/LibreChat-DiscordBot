@@ -1,3 +1,6 @@
-TOKEN = ''
-CLIENT_ID = ''
-LIBRECHAT_PATH = "."
+# Discord 'App Token' and 'Client ID'
+# https://discord.com/developers/applications
+
+TOKEN=''
+CLIENT_ID=''
+LIBRECHAT_PATH="."
