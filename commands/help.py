@@ -95,7 +95,7 @@ class Help(Extension):
             name="/ban",
             value=
             "🔨 Ban a user\n"
-            "- user email is required\n"
+            "- User's email is required\n Enter the duration in minutes, hours, days\n"
         )
         embed.add_field(
             name="---",

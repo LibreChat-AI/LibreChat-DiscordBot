@@ -29,18 +29,46 @@ class Balance(Extension):
                 placeholder="example@example.com",
             ),
             ShortText(
-                label="⌛ Duration in min. | example: 60*24 = 1 day",
-                custom_id="duration",
-                required=True,
-                placeholder="Duration of the ban in minutes.",
+                label="⌛ Duration in minutes",
+                custom_id="minutes",
+                required=False,
+                placeholder="0",
+            ),
+            ShortText(
+                label="⌛ Duration in hours",
+                custom_id="hours",
+                required=False,
+                placeholder="0",
+            ),
+            ShortText(
+                label="⌛ Duration in days",
+                custom_id="days",
+                required=False,
+                placeholder="0",
             ),
             title="🔨 Ban User",
             custom_id="ban",
         )
         await ctx.send_modal(modal=balance)
 
+
     @modal_callback("ban")
-    async def on_modal_answer(self, ctx: ModalContext, email: str, duration: str):
-        command = f"npm run ban-user {email} {duration}"
+    async def on_modal_answer(
+        self,
+        ctx: ModalContext,
+        email: str,
+        minutes: str,
+        hours: str,
+        days: str
+        ):
+
+        minutes = int(minutes) * 60000 if minutes else 0 # Convert to milliseconds
+        hours = int(hours) * 3600000  if hours else 0 # Convert to milliseconds
+        days = int(days) * 86400000  if days else 0 # Convert to milliseconds
+
+        total_duration_in_ms = minutes + hours + days  # Add all durations together
+
+        command = f"npm run ban-user {email} {total_duration_in_ms}"
+
         await ctx.send(f"{command}", ephemeral=True)
         await run_shell_command(ctx, command)
