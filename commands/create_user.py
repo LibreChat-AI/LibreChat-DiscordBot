@@ -16,8 +16,8 @@ from interactions import(
 )
 from utils.utils import run_shell_command
 
-class AddUser(Extension):
-    @slash_command(name="add-user", description="🙆 Add User")
+class CreateUser(Extension):
+    @slash_command(name="create-user", description="🙆 Create User")
     async def adduser_modal(self, ctx: SlashContext):
         balance = Modal(
             ShortText(
@@ -50,12 +50,12 @@ class AddUser(Extension):
                 max_length=128,
                 placeholder="1234567890",
             ),
-            title="🙆 Add User",
-            custom_id="add-user",
+            title="🙆 Create User",
+            custom_id="create-user",
         )
         await ctx.send_modal(modal=balance)
 
-    @modal_callback("add-user")
+    @modal_callback("create-user")
     async def on_modal_answer(
         self, ctx: ModalContext,
         email: str,
@@ -63,6 +63,6 @@ class AddUser(Extension):
         username: str,
         password: str
         ):
-        command = f'npm run add-user "{email}" "{name}" "{username}" "{password}"'
+        command = f'npm run create-user "{email}" "{name}" "{username}" "{password}"'
         await ctx.send(f"{command}", ephemeral=True)
         await run_shell_command(ctx, command)

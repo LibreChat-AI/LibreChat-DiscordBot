@@ -98,6 +98,12 @@ class Help(Extension):
             "- user email is required\n"
         )
         embed.add_field(
+            name="/create-user",
+            value=
+            "🙆 Create User\n"
+            "- You need to provide: **email**, **name**, **username** and **password**\n"
+        )
+        embed.add_field(
             name="---",
             value="\n"
         )
