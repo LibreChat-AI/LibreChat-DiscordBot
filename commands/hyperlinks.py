@@ -29,7 +29,7 @@ class Hyperlinks(Extension):
                 Button(
                     style=ButtonStyle.URL,
                     label="Docs",
-                    url="https://www.librechat.ai/docs"
+                    url="https://librechat.ai/docs"
                 ),
                 Button(
                     style=ButtonStyle.URL,
