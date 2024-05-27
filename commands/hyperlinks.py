@@ -23,13 +23,13 @@ class Hyperlinks(Extension):
             ActionRow(
                 Button(
                     style=ButtonStyle.URL,
-                    label="GitHub",
+                    label="LibreChat.ai",
                     url="https://librechat.ai"
                 ),
                 Button(
                     style=ButtonStyle.URL,
                     label="Docs",
-                    url="https://docs.librechat.ai"
+                    url="https://librechat.ai/docs"
                 ),
                 Button(
                     style=ButtonStyle.URL,
@@ -38,8 +38,23 @@ class Hyperlinks(Extension):
                 ),
                 Button(
                     style=ButtonStyle.URL,
+                    label="Github",
+                    url="https://github.librechat.ai"
+                ),
+                Button(
+                    style=ButtonStyle.URL,
                     label="Youtube",
                     url="https://www.youtube.com/@LibreChat"
+                ),
+                Button(
+                    style=ButtonStyle.URL,
+                    label="Twitter",
+                    url="https://twitter.com/LibreChatAI"
+                ),
+                Button(
+                    style=ButtonStyle.URL,
+                    label="Linkedin",
+                    url="https://www.linkedin.com/company/100468026"
                 )
             )
         ]
